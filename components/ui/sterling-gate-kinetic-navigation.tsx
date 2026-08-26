@@ -14,16 +14,16 @@ if (typeof window !== "undefined") {
 
 export function KineticNavigation() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const isFirstRender = useRef(true);
 
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // Initial Setup & Hover Shapes
+  // Build Master Kinetic Open/Reverse Timeline on Mount
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -36,212 +36,152 @@ export function KineticNavigation() {
       gsap.defaults({ ease: "power2.out", duration: 0.7 });
     }
 
-    const ctx = gsap.context(() => {
-      const menuItems = containerRef.current!.querySelectorAll(".menu-list-item[data-shape]");
-      const shapesContainer = containerRef.current!.querySelector(".ambient-background-shapes");
+    const navWrap = containerRef.current.querySelector(".nav-overlay-wrapper");
+    const menu = containerRef.current.querySelector(".menu-content");
+    const overlay = containerRef.current.querySelector(".overlay");
+    const bgPanels = containerRef.current.querySelectorAll(".backdrop-layer");
+    const menuLinks = containerRef.current.querySelectorAll(".nav-link");
+    const fadeTargets = containerRef.current.querySelectorAll("[data-menu-fade]");
+    const menuButton = containerRef.current.querySelector(".nav-close-btn");
+    const menuButtonTexts = menuButton?.querySelectorAll("p");
+    const menuButtonIcon = menuButton?.querySelector(".menu-button-icon");
 
-      menuItems.forEach((item) => {
-        const shapeIndex = item.getAttribute("data-shape");
-        const shape = shapesContainer ? shapesContainer.querySelector(`.bg-shape-${shapeIndex}`) : null;
+    if (!navWrap || !menu || !overlay) return;
 
-        if (!shape) return;
-        const shapeEls = shape.querySelectorAll(".shape-element");
+    // Set initial closed positions
+    gsap.set(navWrap, { display: "none" });
+    gsap.set(overlay, { autoAlpha: 0 });
+    gsap.set(menu, { xPercent: 100 });
+    if (bgPanels.length) gsap.set(bgPanels, { xPercent: 101 });
+    if (menuLinks.length) gsap.set(menuLinks, { yPercent: 140, rotate: 6, opacity: 0 });
+    if (fadeTargets.length) gsap.set(fadeTargets, { autoAlpha: 0, yPercent: 20 });
 
-        const onEnter = () => {
-          if (shapesContainer) {
-            shapesContainer.querySelectorAll(".bg-shape").forEach((s) => s.classList.remove("active"));
-          }
-          shape.classList.add("active");
+    // Master Timeline with bidirectional playback
+    const tl = gsap.timeline({
+      paused: true,
+      reversed: true,
+      onStart: () => {
+        gsap.set(navWrap, { display: "block" });
+      },
+      onReverseComplete: () => {
+        gsap.set(navWrap, { display: "none" });
+      },
+    });
 
-          gsap.fromTo(
-            shapeEls,
-            { scale: 0.5, opacity: 0, rotation: -10 },
-            {
-              scale: 1,
-              opacity: 1,
-              rotation: 0,
-              duration: 0.6,
-              stagger: 0.08,
-              ease: "back.out(1.7)",
-              overwrite: "auto",
-            }
-          );
-        };
+    // 1. Overlay & Drawer Slide
+    tl.to(overlay, { autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 0)
+      .to(menu, { xPercent: 0, duration: 0.55, ease: "power3.out" }, 0);
 
-        const onLeave = () => {
-          gsap.to(shapeEls, {
-            scale: 0.8,
-            opacity: 0,
-            duration: 0.3,
-            ease: "power2.in",
-            onComplete: () => shape.classList.remove("active"),
+    // 2. Button text roll & Icon 315deg rotation
+    if (menuButtonTexts && menuButtonTexts.length > 0) {
+      tl.to(menuButtonTexts, { yPercent: -100, stagger: 0.1, duration: 0.4, ease: "power2.inOut" }, 0);
+    }
+    if (menuButtonIcon) {
+      tl.to(menuButtonIcon, { rotate: 315, duration: 0.45, ease: "power2.out" }, 0);
+    }
+
+    // 3. Staggered Backdrop Panels
+    if (bgPanels && bgPanels.length > 0) {
+      tl.to(
+        bgPanels,
+        { xPercent: 0, stagger: 0.08, duration: 0.55, ease: "power3.out" },
+        0.05
+      );
+    }
+
+    // 4. Staggered Menu Links
+    if (menuLinks && menuLinks.length > 0) {
+      tl.to(
+        menuLinks,
+        {
+          yPercent: 0,
+          rotate: 0,
+          opacity: 1,
+          stagger: 0.05,
+          duration: 0.55,
+          ease: "power3.out",
+        },
+        0.2
+      );
+    }
+
+    // 5. Fade Targets (Contacts & CV button)
+    if (fadeTargets && fadeTargets.length > 0) {
+      tl.to(
+        fadeTargets,
+        { autoAlpha: 1, yPercent: 0, stagger: 0.04, duration: 0.4, ease: "power2.out" },
+        0.3
+      );
+    }
+
+    tlRef.current = tl;
+
+    // Hover Shapes Setup
+    const menuItems = containerRef.current.querySelectorAll(".menu-list-item[data-shape]");
+    const shapesContainer = containerRef.current.querySelector(".ambient-background-shapes");
+
+    menuItems.forEach((item) => {
+      const shapeIndex = item.getAttribute("data-shape");
+      const shape = shapesContainer ? shapesContainer.querySelector(`.bg-shape-${shapeIndex}`) : null;
+
+      if (!shape) return;
+      const shapeEls = shape.querySelectorAll(".shape-element");
+
+      const onEnter = () => {
+        if (shapesContainer) {
+          shapesContainer.querySelectorAll(".bg-shape").forEach((s) => s.classList.remove("active"));
+        }
+        shape.classList.add("active");
+
+        gsap.fromTo(
+          shapeEls,
+          { scale: 0.5, opacity: 0, rotation: -10 },
+          {
+            scale: 1,
+            opacity: 1,
+            rotation: 0,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "back.out(1.7)",
             overwrite: "auto",
-          });
-        };
+          }
+        );
+      };
 
-        item.addEventListener("mouseenter", onEnter);
-        item.addEventListener("mouseleave", onLeave);
+      const onLeave = () => {
+        gsap.to(shapeEls, {
+          scale: 0.8,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => shape.classList.remove("active"),
+          overwrite: "auto",
+        });
+      };
 
-        (item as any)._cleanup = () => {
-          item.removeEventListener("mouseenter", onEnter);
-          item.removeEventListener("mouseleave", onLeave);
-        };
-      });
-    }, containerRef);
+      item.addEventListener("mouseenter", onEnter);
+      item.addEventListener("mouseleave", onLeave);
+
+      (item as any)._cleanup = () => {
+        item.removeEventListener("mouseenter", onEnter);
+        item.removeEventListener("mouseleave", onLeave);
+      };
+    });
 
     return () => {
-      ctx.revert();
-      if (containerRef.current) {
-        const items = containerRef.current.querySelectorAll(".menu-list-item[data-shape]");
-        items.forEach((item: any) => item._cleanup && item._cleanup());
-      }
+      tl.kill();
+      menuItems.forEach((item: any) => item._cleanup && item._cleanup());
     };
   }, []);
 
-  // Menu Open & Full Choreographed Close Animation Effect
+  // Smooth Forward Play / Reverse Play on State Change
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
+    if (!tlRef.current) return;
+    if (isMenuOpen) {
+      tlRef.current.play();
+    } else {
+      tlRef.current.reverse();
     }
-
-    const ctx = gsap.context(() => {
-      const navWrap = containerRef.current!.querySelector(".nav-overlay-wrapper");
-      const menu = containerRef.current!.querySelector(".menu-content");
-      const overlay = containerRef.current!.querySelector(".overlay");
-      const bgPanels = containerRef.current!.querySelectorAll(".backdrop-layer");
-      const menuLinks = containerRef.current!.querySelectorAll(".nav-link");
-      const fadeTargets = containerRef.current!.querySelectorAll("[data-menu-fade]");
-
-      const menuButton = containerRef.current!.querySelector(".nav-close-btn");
-      const menuButtonTexts = menuButton?.querySelectorAll("p");
-      const menuButtonIcon = menuButton?.querySelector(".menu-button-icon");
-
-      const tl = gsap.timeline();
-
-      if (isMenuOpen) {
-        // === OPEN ANIMATION ===
-        if (navWrap) navWrap.setAttribute("data-nav", "open");
-
-        tl.set(navWrap, { display: "block" })
-          .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45 }, 0)
-          .fromTo(
-            menu,
-            { xPercent: 100 },
-            { xPercent: 0, duration: 0.6, ease: "power3.out" },
-            0
-          );
-
-        if (menuButtonTexts && menuButtonTexts.length > 0) {
-          tl.fromTo(menuButtonTexts, { yPercent: 0 }, { yPercent: -100, stagger: 0.12, duration: 0.4 }, 0);
-        }
-        if (menuButtonIcon) {
-          tl.fromTo(menuButtonIcon, { rotate: 0 }, { rotate: 315, duration: 0.45, ease: "power2.out" }, 0);
-        }
-
-        if (bgPanels && bgPanels.length > 0) {
-          tl.fromTo(
-            bgPanels,
-            { xPercent: 101 },
-            { xPercent: 0, stagger: 0.08, duration: 0.55, ease: "power3.out" },
-            0.05
-          );
-        }
-
-        if (menuLinks && menuLinks.length > 0) {
-          tl.fromTo(
-            menuLinks,
-            { yPercent: 140, rotate: 6, opacity: 0 },
-            {
-              yPercent: 0,
-              rotate: 0,
-              opacity: 1,
-              stagger: 0.05,
-              duration: 0.55,
-              ease: "power3.out",
-            },
-            0.2
-          );
-        }
-
-        if (fadeTargets.length) {
-          tl.fromTo(
-            fadeTargets,
-            { autoAlpha: 0, yPercent: 25 },
-            { autoAlpha: 1, yPercent: 0, stagger: 0.04, duration: 0.4, clearProps: "all" },
-            0.3
-          );
-        }
-      } else {
-        // === SMOOTH REVERSE CLOSE ANIMATION ===
-        if (navWrap) navWrap.setAttribute("data-nav", "closed");
-
-        // 1. Menu links slide down and fade out
-        if (menuLinks && menuLinks.length > 0) {
-          tl.to(
-            menuLinks,
-            {
-              yPercent: 100,
-              opacity: 0,
-              stagger: 0.025,
-              duration: 0.32,
-              ease: "power2.in",
-            },
-            0
-          );
-        }
-
-        // 2. Footer contacts and info fade out
-        if (fadeTargets && fadeTargets.length > 0) {
-          tl.to(fadeTargets, { autoAlpha: 0, duration: 0.22, ease: "power2.in" }, 0);
-        }
-
-        // 3. Backdrop panels stagger slide out to the right
-        if (bgPanels && bgPanels.length > 0) {
-          tl.to(
-            bgPanels,
-            {
-              xPercent: 101,
-              stagger: 0.05,
-              duration: 0.42,
-              ease: "power3.in",
-            },
-            0.06
-          );
-        }
-
-        // 4. Menu drawer slides out smoothly
-        tl.to(
-          menu,
-          {
-            xPercent: 100,
-            duration: 0.45,
-            ease: "power3.inOut",
-          },
-          0.06
-        );
-
-        // 5. Button text slides back from Close to Menu
-        if (menuButtonTexts && menuButtonTexts.length > 0) {
-          tl.to(menuButtonTexts, { yPercent: 0, duration: 0.32, ease: "power2.out" }, 0);
-        }
-
-        // 6. Cross icon rotates back from 315deg to 0deg
-        if (menuButtonIcon) {
-          tl.to(menuButtonIcon, { rotate: 0, duration: 0.38, ease: "power2.out" }, 0);
-        }
-
-        // 7. Backdrop overlay fades out
-        tl.to(overlay, { autoAlpha: 0, duration: 0.38, ease: "power2.in" }, 0.08);
-
-        // 8. Safely hide wrapper after all animations finish
-        tl.set(navWrap, { display: "none" });
-      }
-    }, containerRef);
-
-    return () => ctx.revert();
   }, [isMenuOpen]);
 
   // Keydown Escape handling
@@ -457,14 +397,14 @@ export function KineticNavigation() {
                 <li className="menu-list-item" data-shape="5">
                   <Link href="/contact" className="nav-link" onClick={closeMenu}>
                     <span className="nav-link-sub">05</span>
-                    <p className="nav-link-text" data-menu-fade>Contact</p>
+                    <p className="nav-link-text">Contact</p>
                     <div className="nav-link-hover-bg"></div>
                   </Link>
                 </li>
               </ul>
 
               {/* Action Buttons & CV Download */}
-              <div className="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4">
+              <div className="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4" data-menu-fade>
                 <a
                   href={PERSONAL_INFO.cvDownloadUrl}
                   download="Resume-ZAINAL-ABIDIN.pdf"
@@ -477,7 +417,6 @@ export function KineticNavigation() {
                 {/* Menu Footer Contacts */}
                 <div
                   className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs text-zinc-400 pt-1"
-                  data-menu-fade
                 >
                   <a
                     href={PERSONAL_INFO.whatsappUrl}
