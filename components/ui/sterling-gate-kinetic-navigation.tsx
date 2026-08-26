@@ -16,13 +16,14 @@ export function KineticNavigation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isFirstRender = useRef(true);
 
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // Initial Setup & Hover Effects
+  // Initial Setup & Hover Shapes
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -97,9 +98,14 @@ export function KineticNavigation() {
     };
   }, []);
 
-  // Menu Open/Close Animation Effect
+  // Menu Open & Full Choreographed Close Animation Effect
   useEffect(() => {
     if (!containerRef.current) return;
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     const ctx = gsap.context(() => {
       const navWrap = containerRef.current!.querySelector(".nav-overlay-wrapper");
@@ -116,31 +122,31 @@ export function KineticNavigation() {
       const tl = gsap.timeline();
 
       if (isMenuOpen) {
-        // OPEN
+        // === OPEN ANIMATION ===
         if (navWrap) navWrap.setAttribute("data-nav", "open");
 
         tl.set(navWrap, { display: "block" })
-          .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 }, "<")
+          .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45 }, 0)
           .fromTo(
             menu,
             { xPercent: 100 },
-            { xPercent: 0, duration: 0.55, ease: "power3.out" },
-            "<"
+            { xPercent: 0, duration: 0.6, ease: "power3.out" },
+            0
           );
 
         if (menuButtonTexts && menuButtonTexts.length > 0) {
-          tl.fromTo(menuButtonTexts, { yPercent: 0 }, { yPercent: -100, stagger: 0.15 }, "<");
+          tl.fromTo(menuButtonTexts, { yPercent: 0 }, { yPercent: -100, stagger: 0.12, duration: 0.4 }, 0);
         }
         if (menuButtonIcon) {
-          tl.fromTo(menuButtonIcon, { rotate: 0 }, { rotate: 315, duration: 0.4 }, "<");
+          tl.fromTo(menuButtonIcon, { rotate: 0 }, { rotate: 315, duration: 0.45, ease: "power2.out" }, 0);
         }
 
         if (bgPanels && bgPanels.length > 0) {
           tl.fromTo(
             bgPanels,
             { xPercent: 101 },
-            { xPercent: 0, stagger: 0.08, duration: 0.5, ease: "power3.out" },
-            "<+=0.05"
+            { xPercent: 0, stagger: 0.08, duration: 0.55, ease: "power3.out" },
+            0.05
           );
         }
 
@@ -156,32 +162,81 @@ export function KineticNavigation() {
               duration: 0.55,
               ease: "power3.out",
             },
-            "<+=0.2"
+            0.2
           );
         }
 
         if (fadeTargets.length) {
           tl.fromTo(
             fadeTargets,
-            { autoAlpha: 0, yPercent: 30 },
+            { autoAlpha: 0, yPercent: 25 },
             { autoAlpha: 1, yPercent: 0, stagger: 0.04, duration: 0.4, clearProps: "all" },
-            "<+=0.15"
+            0.3
           );
         }
       } else {
-        // CLOSE
+        // === SMOOTH REVERSE CLOSE ANIMATION ===
         if (navWrap) navWrap.setAttribute("data-nav", "closed");
 
-        tl.to(overlay, { autoAlpha: 0, duration: 0.35 })
-          .to(menu, { xPercent: 100, duration: 0.4, ease: "power2.in" }, "<");
+        // 1. Menu links slide down and fade out
+        if (menuLinks && menuLinks.length > 0) {
+          tl.to(
+            menuLinks,
+            {
+              yPercent: 100,
+              opacity: 0,
+              stagger: 0.025,
+              duration: 0.32,
+              ease: "power2.in",
+            },
+            0
+          );
+        }
 
+        // 2. Footer contacts and info fade out
+        if (fadeTargets && fadeTargets.length > 0) {
+          tl.to(fadeTargets, { autoAlpha: 0, duration: 0.22, ease: "power2.in" }, 0);
+        }
+
+        // 3. Backdrop panels stagger slide out to the right
+        if (bgPanels && bgPanels.length > 0) {
+          tl.to(
+            bgPanels,
+            {
+              xPercent: 101,
+              stagger: 0.05,
+              duration: 0.42,
+              ease: "power3.in",
+            },
+            0.06
+          );
+        }
+
+        // 4. Menu drawer slides out smoothly
+        tl.to(
+          menu,
+          {
+            xPercent: 100,
+            duration: 0.45,
+            ease: "power3.inOut",
+          },
+          0.06
+        );
+
+        // 5. Button text slides back from Close to Menu
         if (menuButtonTexts && menuButtonTexts.length > 0) {
-          tl.to(menuButtonTexts, { yPercent: 0 }, "<");
-        }
-        if (menuButtonIcon) {
-          tl.to(menuButtonIcon, { rotate: 0 }, "<");
+          tl.to(menuButtonTexts, { yPercent: 0, duration: 0.32, ease: "power2.out" }, 0);
         }
 
+        // 6. Cross icon rotates back from 315deg to 0deg
+        if (menuButtonIcon) {
+          tl.to(menuButtonIcon, { rotate: 0, duration: 0.38, ease: "power2.out" }, 0);
+        }
+
+        // 7. Backdrop overlay fades out
+        tl.to(overlay, { autoAlpha: 0, duration: 0.38, ease: "power2.in" }, 0.08);
+
+        // 8. Safely hide wrapper after all animations finish
         tl.set(navWrap, { display: "none" });
       }
     }, containerRef);
