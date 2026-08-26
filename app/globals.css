@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #ffffff;
+  --color-dark: #000000;
+  --color-surface: #0a0a0a;
+  --color-surface-hover: #121212;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-hover: rgba(255, 255, 255, 0.35);
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-800: #262626;
+  --cubic-default: cubic-bezier(0.65, 0.05, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000000;
+  color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* =========================================================
+   21st.dev Sterling Gate: Kinetic Navigation Styles
+   ========================================================= */
+
+.site-header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 1.5rem 2rem;
+  pointer-events: none;
+}
+
+.header {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-row__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Single Sleek Kinetic Navigation Button */
+.nav-close-btn {
+  background: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.55rem 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+
+.nav-close-btn:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(30, 30, 30, 0.95);
+}
+
+.menu-button-text {
+  height: 1.25rem;
+  overflow: hidden;
+  position: relative;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  width: 48px;
+  text-align: left;
+}
+
+.menu-button-text p {
+  line-height: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+}
+
+.icon-wrap {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-button-icon {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* Fullscreen Menu Overlay Drawer */
+.fullscreen-menu-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+}
+
+.nav-overlay-wrapper {
+  position: fixed;
+  inset: 0;
+  display: none;
+  pointer-events: auto;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.menu-content {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 680px;
+  height: 100vh;
+  background: #080808;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  z-index: 999;
+}
+
+@media (max-width: 640px) {
+  .menu-content {
+    max-width: 100%;
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+.menu-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.backdrop-layer {
+  position: absolute;
+  inset: 0;
+  background: #0d0d0d;
+}
+
+.backdrop-layer.first {
+  background: #161616;
+  opacity: 0.6;
+}
+
+.backdrop-layer.second {
+  background: #202020;
+  opacity: 0.4;
+}
+
+.ambient-background-shapes {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.bg-shape {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.bg-shape.active {
+  opacity: 1 !important;
+}
+
+.menu-content-wrapper {
+  position: relative;
+  z-index: 30;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.menu-list-item {
+  overflow: hidden;
+  position: relative;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: clamp(2rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+}
+
+.nav-link:hover {
+  transform: translateX(18px);
+  color: #ffffff;
+}
+
+.nav-link-sub {
+  font-family: monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: #71717a;
+  font-weight: 600;
+}
+
+.nav-link-text {
+  margin: 0;
+}
