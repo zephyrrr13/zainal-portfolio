@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { Download, ArrowUpRight, MessageCircle, Mail } from "lucide-react";
+import { Download, ArrowUpRight, MessageCircle, Mail, Shield } from "lucide-react";
 import { PERSONAL_INFO } from "@/lib/data";
 
 if (typeof window !== "undefined") {
@@ -286,9 +286,8 @@ export function KineticNavigation() {
               <div className="backdrop-layer second"></div>
               <div className="backdrop-layer"></div>
 
-              {/* Ambient Background Kinetic Shapes (21st.dev Exact Shapes in Monochrome) */}
+              {/* Ambient Background Kinetic Shapes */}
               <div className="ambient-background-shapes">
-                {/* Shape 1: Floating Circles */}
                 <svg className="bg-shape bg-shape-1" viewBox="0 0 400 400" fill="none">
                   <circle className="shape-element" cx="80" cy="120" r="40" fill="rgba(255,255,255,0.12)" />
                   <circle className="shape-element" cx="300" cy="80" r="60" fill="rgba(255,255,255,0.1)" />
@@ -296,7 +295,6 @@ export function KineticNavigation() {
                   <circle className="shape-element" cx="350" cy="280" r="30" fill="rgba(255,255,255,0.12)" />
                 </svg>
 
-                {/* Shape 2: Wave Pattern */}
                 <svg className="bg-shape bg-shape-2" viewBox="0 0 400 400" fill="none">
                   <path
                     className="shape-element"
@@ -314,7 +312,6 @@ export function KineticNavigation() {
                   />
                 </svg>
 
-                {/* Shape 3: Grid Dots */}
                 <svg className="bg-shape bg-shape-3" viewBox="0 0 400 400" fill="none">
                   <circle className="shape-element" cx="50" cy="50" r="8" fill="rgba(255,255,255,0.25)" />
                   <circle className="shape-element" cx="150" cy="50" r="8" fill="rgba(255,255,255,0.25)" />
@@ -323,41 +320,26 @@ export function KineticNavigation() {
                   <circle className="shape-element" cx="100" cy="150" r="12" fill="rgba(255,255,255,0.2)" />
                   <circle className="shape-element" cx="200" cy="150" r="12" fill="rgba(255,255,255,0.2)" />
                   <circle className="shape-element" cx="300" cy="150" r="12" fill="rgba(255,255,255,0.2)" />
-                  <circle className="shape-element" cx="50" cy="250" r="10" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="150" cy="250" r="10" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="250" cy="250" r="10" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="350" cy="250" r="10" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="100" cy="350" r="6" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="200" cy="350" r="6" fill="rgba(255,255,255,0.25)" />
-                  <circle className="shape-element" cx="300" cy="350" r="6" fill="rgba(255,255,255,0.25)" />
                 </svg>
 
-                {/* Shape 4: Organic Blobs */}
                 <svg className="bg-shape bg-shape-4" viewBox="0 0 400 400" fill="none">
                   <path
                     className="shape-element"
                     d="M100 100 Q150 50, 200 100 Q250 150, 200 200 Q150 250, 100 200 Q50 150, 100 100"
                     fill="rgba(255,255,255,0.12)"
                   />
-                  <path
-                    className="shape-element"
-                    d="M250 200 Q300 150, 350 200 Q400 250, 350 300 Q400 250, 350 300 Q300 350, 250 300 Q200 250, 250 200"
-                    fill="rgba(255,255,255,0.08)"
-                  />
                 </svg>
 
-                {/* Shape 5: Diagonal Lines */}
                 <svg className="bg-shape bg-shape-5" viewBox="0 0 400 400" fill="none">
                   <line className="shape-element" x1="0" y1="100" x2="300" y2="400" stroke="rgba(255,255,255,0.15)" strokeWidth="30" />
                   <line className="shape-element" x1="100" y1="0" x2="400" y2="300" stroke="rgba(255,255,255,0.12)" strokeWidth="25" />
-                  <line className="shape-element" x1="200" y1="0" x2="400" y2="200" stroke="rgba(255,255,255,0.1)" strokeWidth="20" />
                 </svg>
               </div>
             </div>
 
             {/* Menu Links Content */}
             <div className="menu-content-wrapper">
-              <div className="mb-6 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
+              <div className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
                 // DIRECTORY
               </div>
 
@@ -395,29 +377,47 @@ export function KineticNavigation() {
                 </li>
 
                 <li className="menu-list-item" data-shape="5">
-                  <Link href="/contact" className="nav-link" onClick={closeMenu}>
+                  <Link href="/blog" className="nav-link" onClick={closeMenu}>
                     <span className="nav-link-sub">05</span>
+                    <p className="nav-link-text">Articles & Blog</p>
+                    <div className="nav-link-hover-bg"></div>
+                  </Link>
+                </li>
+
+                <li className="menu-list-item" data-shape="1">
+                  <Link href="/contact" className="nav-link" onClick={closeMenu}>
+                    <span className="nav-link-sub">06</span>
                     <p className="nav-link-text">Contact</p>
                     <div className="nav-link-hover-bg"></div>
                   </Link>
                 </li>
               </ul>
 
-              {/* Action Buttons & CV Download */}
-              <div className="mt-8 pt-6 border-t border-white/10 flex flex-col gap-4" data-menu-fade>
-                <a
-                  href={PERSONAL_INFO.cvDownloadUrl}
-                  download="Resume-ZAINAL-ABIDIN.pdf"
-                  className="flex items-center justify-between rounded-xl border border-white/20 bg-white/5 px-5 py-3 font-mono text-xs uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black"
-                >
-                  <span className="font-bold">DOWNLOAD RESUME CV</span>
-                  <Download className="h-4 w-4" />
-                </a>
+              {/* Action Buttons & Admin Access */}
+              <div className="mt-6 pt-5 border-t border-white/10 flex flex-col gap-3" data-menu-fade>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={PERSONAL_INFO.cvDownloadUrl}
+                    download="Resume-ZAINAL-ABIDIN.pdf"
+                    className="flex flex-1 items-center justify-between rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black"
+                  >
+                    <span className="font-bold">DOWNLOAD CV</span>
+                    <Download className="h-3.5 w-3.5" />
+                  </a>
+
+                  <Link
+                    href="/login"
+                    onClick={closeMenu}
+                    className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-zinc-900 px-3.5 py-2.5 font-mono text-xs text-zinc-400 hover:border-white/30 hover:text-white transition-all"
+                    title="Login Admin Portal"
+                  >
+                    <Shield className="h-3.5 w-3.5 text-zinc-300" />
+                    <span>Admin</span>
+                  </Link>
+                </div>
 
                 {/* Menu Footer Contacts */}
-                <div
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs text-zinc-400 pt-1"
-                >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-mono text-xs text-zinc-400 pt-1">
                   <a
                     href={PERSONAL_INFO.whatsappUrl}
                     target="_blank"
@@ -434,26 +434,6 @@ export function KineticNavigation() {
                   >
                     <Mail className="h-3.5 w-3.5 text-zinc-400" />
                     <span>{PERSONAL_INFO.email}</span>
-                  </a>
-
-                  <a
-                    href={PERSONAL_INFO.socials.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors"
-                  >
-                    <span>INSTAGRAM</span>
-                    <ArrowUpRight className="h-3 w-3 text-zinc-400" />
-                  </a>
-
-                  <a
-                    href={PERSONAL_INFO.behance}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors"
-                  >
-                    <span>BEHANCE PORTFOLIO</span>
-                    <ArrowUpRight className="h-3 w-3 text-zinc-400" />
                   </a>
                 </div>
               </div>

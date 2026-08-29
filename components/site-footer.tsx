@@ -10,6 +10,7 @@ import {
   Check,
   Copy,
   ExternalLink,
+  Shield,
 } from "lucide-react";
 import { PERSONAL_INFO } from "@/lib/data";
 
@@ -90,8 +91,16 @@ export function SiteFooter() {
             <Link href="/gallery" className="text-zinc-300 hover:text-white transition-colors">
               04. Gallery Wall
             </Link>
+            <Link href="/blog" className="text-zinc-300 hover:text-white transition-colors flex items-center justify-between">
+              <span>05. Articles & Case Studies</span>
+              <span className="rounded-full bg-white/10 px-1.5 py-0.2 text-[9px] text-zinc-400">NEW</span>
+            </Link>
             <Link href="/contact" className="text-zinc-300 hover:text-white transition-colors">
-              05. Contact
+              06. Contact
+            </Link>
+            <Link href="/login" className="text-zinc-500 hover:text-white transition-colors pt-2 flex items-center gap-1.5 border-t border-white/5">
+              <Shield className="h-3 w-3 text-zinc-400" />
+              <span>Admin Portal Access</span>
             </Link>
           </div>
 
