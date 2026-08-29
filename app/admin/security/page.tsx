@@ -9,7 +9,6 @@ export default function AdminSecurityPage() {
   const [loading, setLoading] = useState(true);
 
   // Password update form
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passLoading, setPassLoading] = useState(false);
@@ -74,16 +73,21 @@ export default function AdminSecurityPage() {
 
     setPassLoading(true);
     try {
-      const res = await fetch("/api/auth/reset-password", {
+      const res = await fetch("/api/admin/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: "bypass_session", newPassword }),
+        body: JSON.stringify({ newPassword }),
       });
 
-      setPassMessage("Kata sandi admin berhasil diubah!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPassError(data.error || "Gagal memperbarui password.");
+      } else {
+        setPassMessage(data.message || "Kata sandi admin berhasil diubah!");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
     } catch {
       setPassError("Gagal memperbarui password.");
     } finally {
