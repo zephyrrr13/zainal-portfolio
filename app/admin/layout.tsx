@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Inter } from "next/font/google";
 import {
   LayoutDashboard,
   FileText,
@@ -17,6 +18,11 @@ import {
   User,
   Activity,
 } from "lucide-react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -77,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex min-h-screen w-full bg-[#08080a] text-white font-sans selection:bg-white selection:text-black">
+    <div className={`flex min-h-screen w-full bg-[#08080a] text-white ${inter.className} selection:bg-white selection:text-black`}>
       {/* 1. Collapsible Sidebar */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col justify-between border-r border-white/10 bg-[#0d0d11]/95 backdrop-blur-2xl transition-all duration-300 ${

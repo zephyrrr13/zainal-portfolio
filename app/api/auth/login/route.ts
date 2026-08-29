@@ -29,31 +29,46 @@ export async function POST(req: NextRequest) {
     // 2. Authenticate User
     const cleanIdentifier = username.trim().toLowerCase();
     const data = db.get();
-    
-    const defaultPass = process.env.ADMIN_INITIAL_PASSWORD || "Zainal@Admin2026!";
-    const defaultUser = (process.env.ADMIN_USERNAME || "zephyrrr13").toLowerCase();
-    const defaultEmail = (process.env.ADMIN_EMAIL || "ananizainal13@gmail.com").toLowerCase();
+
+    const allowedUsers = ["zephyrrr13", "zephyr13", "ananizainal13@gmail.com", "zainal"];
+    const isValidUser =
+      allowedUsers.includes(cleanIdentifier) ||
+      data.users.some((u) => u.email.toLowerCase() === cleanIdentifier || u.username.toLowerCase() === cleanIdentifier);
+
+    if (!isValidUser) {
+      return NextResponse.json({ error: "Username/Email tidak terdaftar." }, { status: 401 });
+    }
 
     // Check Vault Hash first (from persistent cookie on serverless)
     const vaultHash = getVaultPasswordHash(cleanIdentifier);
     let isMatch = false;
 
     if (vaultHash) {
-      isMatch = bcrypt.compareSync(password, vaultHash);
+      try {
+        isMatch = bcrypt.compareSync(password, vaultHash);
+      } catch {}
     }
 
-    // If not matched via vault, check against DB or default credentials
+    // Direct password match (including user's preferred password zephyr13)
+    if (!isMatch) {
+      if (
+        password === "zephyr13" ||
+        password === "Zainal@Admin2026!" ||
+        password === process.env.ADMIN_INITIAL_PASSWORD
+      ) {
+        isMatch = true;
+      }
+    }
+
+    // Check DB hash
     if (!isMatch) {
       const adminUser = data.users.find(
         (u) => u.email.toLowerCase() === cleanIdentifier || u.username.toLowerCase() === cleanIdentifier
       );
-
       if (adminUser) {
-        isMatch =
-          bcrypt.compareSync(password, adminUser.passwordHash) ||
-          password === defaultPass;
-      } else if (cleanIdentifier === defaultUser || cleanIdentifier === defaultEmail) {
-        isMatch = password === defaultPass;
+        try {
+          isMatch = bcrypt.compareSync(password, adminUser.passwordHash);
+        } catch {}
       }
     }
 

@@ -3,7 +3,13 @@
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Inter } from "next/font/google";
 import { Lock, Mail, Eye, EyeOff, ShieldCheck, RefreshCw, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 function LoginForm() {
   const router = useRouter();
@@ -88,7 +94,7 @@ function LoginForm() {
         setTimeout(() => {
           router.push(redirectUrl);
           router.refresh();
-        }, 600);
+        }, 500);
       }
     } catch {
       setError("Terjadi gangguan koneksi ke server auth.");
@@ -99,16 +105,16 @@ function LoginForm() {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-[0_25px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:p-10">
+    <div className={`overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-[0_25px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:p-10 ${inter.className}`}>
       {/* Header */}
       <div className="flex items-center justify-between pb-6 border-b border-white/10">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-300">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           PORTAL ADMIN // GATEWAY
         </div>
         <Link
           href="/"
-          className="font-mono text-xs text-zinc-400 hover:text-white transition-colors"
+          className="text-xs font-medium text-zinc-400 hover:text-white transition-colors"
         >
           ← KEMBALI
         </Link>
@@ -119,21 +125,21 @@ function LoginForm() {
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Admin Access
         </h1>
-        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-sans">
+        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-normal">
           Masuk untuk mengelola portfolio, analitik kunjungan, dan artikel CMS.
         </p>
       </div>
 
       {/* Alerts */}
       {error && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300 font-sans">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300">
           <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300 font-sans">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
           <span>{success}</span>
         </div>
@@ -143,7 +149,7 @@ function LoginForm() {
       <form onSubmit={handleLogin} className="space-y-4">
         {/* Username / Email */}
         <div>
-          <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-zinc-300">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
             Username atau Email
           </label>
           <div className="relative">
@@ -154,7 +160,7 @@ function LoginForm() {
               placeholder="Masukkan username atau email"
               autoComplete="username"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-sans text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Mail className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
           </div>
@@ -163,12 +169,12 @@ function LoginForm() {
         {/* Password */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="font-mono text-[11px] uppercase tracking-wider text-zinc-300">
+            <label className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
               Password
             </label>
             <Link
               href="/forgot-password"
-              className="text-xs text-zinc-400 hover:text-white underline transition-colors font-sans"
+              className="text-xs text-zinc-400 hover:text-white underline transition-colors"
             >
               Lupa Password?
             </Link>
@@ -181,7 +187,7 @@ function LoginForm() {
               placeholder="••••••••••••"
               autoComplete="current-password"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-sans text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Lock className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
             <button
@@ -197,7 +203,7 @@ function LoginForm() {
         {/* Anti-Bot CAPTCHA Box */}
         <div className="rounded-xl border border-white/10 bg-black/60 p-3.5">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-wider text-zinc-300">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
               <span>Verifikasi Anti-Bot</span>
             </div>
@@ -205,7 +211,7 @@ function LoginForm() {
               type="button"
               onClick={fetchCaptcha}
               disabled={captchaLoading}
-              className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-white transition-colors disabled:opacity-50 font-sans cursor-pointer"
+              className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`h-3 w-3 ${captchaLoading ? "animate-spin" : ""}`} />
               <span>Acak</span>
@@ -213,7 +219,7 @@ function LoginForm() {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
-            <div className="flex items-center justify-center rounded-lg border border-white/15 bg-zinc-900 font-mono text-xs font-bold text-white tracking-widest py-2 select-none">
+            <div className="flex items-center justify-center rounded-lg border border-white/15 bg-zinc-900 text-xs font-bold text-white tracking-widest py-2 select-none">
               {captchaData ? captchaData.question : "Memuat..."}
             </div>
             <input
@@ -222,7 +228,7 @@ function LoginForm() {
               onChange={(e) => setCaptchaAnswer(e.target.value)}
               placeholder="Jawaban angka"
               required
-              className="rounded-lg border border-white/15 bg-zinc-900/90 px-3 py-2 text-center font-sans text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="rounded-lg border border-white/15 bg-zinc-900/90 px-3 py-2 text-center text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
           </div>
         </div>
@@ -238,7 +244,7 @@ function LoginForm() {
           />
           <label
             htmlFor="rememberMe"
-            className="select-none font-sans text-xs text-zinc-300 cursor-pointer"
+            className="select-none text-xs text-zinc-300 cursor-pointer"
           >
             Tetap login di perangkat ini (30 Hari)
           </label>
@@ -248,7 +254,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="group mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
+          className="group mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -269,13 +275,13 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white">
+    <div className={`relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white ${inter.className}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-35" />
 
       <div className="relative z-10 mx-auto w-full max-w-md">
         <Suspense
           fallback={
-            <div className="flex h-96 items-center justify-center font-sans text-xs text-zinc-400">
+            <div className="flex h-96 items-center justify-center text-xs text-zinc-400">
               Memuat form login...
             </div>
           }

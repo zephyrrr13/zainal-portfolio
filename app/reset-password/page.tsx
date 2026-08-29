@@ -3,7 +3,13 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Inter } from "next/font/google";
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, RefreshCw, KeyRound } from "lucide-react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -66,29 +72,29 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
+    <div className={`overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-2xl backdrop-blur-2xl sm:p-10 ${inter.className}`}>
       <div className="mb-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 mb-4">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-300 mb-4">
           <KeyRound className="h-3 w-3 text-emerald-400" />
           VERIFIKASI EMAIL TERKONFIRMASI
         </div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white">
           Buat Password Baru
         </h1>
-        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-sans">
+        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-normal">
           Masukkan kata sandi baru yang kuat untuk mengamankan akun admin kamu.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300 font-sans">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300">
           <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300 font-sans">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
           <span>{success}</span>
         </div>
@@ -96,7 +102,7 @@ function ResetPasswordForm() {
 
       <form onSubmit={handleReset} className="space-y-4">
         <div>
-          <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-zinc-300">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
             Password Baru
           </label>
           <div className="relative">
@@ -106,7 +112,7 @@ function ResetPasswordForm() {
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Minimal 8 karakter"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-sans text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Lock className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
             <button
@@ -120,7 +126,7 @@ function ResetPasswordForm() {
         </div>
 
         <div>
-          <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-zinc-300">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
             Konfirmasi Password Baru
           </label>
           <div className="relative">
@@ -139,7 +145,7 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -155,7 +161,7 @@ function ResetPasswordForm() {
       <div className="mt-6 text-center">
         <Link
           href="/login"
-          className="font-sans text-xs text-zinc-400 hover:text-white underline"
+          className="text-xs text-zinc-400 hover:text-white underline"
         >
           Kembali ke Halaman Login
         </Link>
@@ -166,13 +172,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white">
+    <div className={`relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white ${inter.className}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
 
       <div className="relative z-10 mx-auto w-full max-w-md">
         <Suspense
           fallback={
-            <div className="flex h-96 items-center justify-center font-sans text-xs text-zinc-400">
+            <div className="flex h-96 items-center justify-center text-xs text-zinc-400">
               Memuat verifikasi...
             </div>
           }
