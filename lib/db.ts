@@ -211,6 +211,66 @@ const DEFAULT_PLUGINS: PluginSettings = {
 
 const DEFAULT_ARTICLES: Article[] = [
   {
+    id: "art-zephyr-capture",
+    slug: "zephyr-window-capture-plugin-resolume-windows",
+    title: "Zephyr Window Capture Plugin For Resolume (Windows Only)",
+    excerpt: "A high-performance, zero-latency GPU-accelerated window capture plugin for Resolume Arena on Windows. Capture Unreal Engine viewports, TouchDesigner feeds, or browser overlays with zero frame drops.",
+    content: `# Zephyr Window Capture Plugin For Resolume (Windows Only)
+
+When performing live VJ sets or operating ceremonial event stage visuals, capturing external window feeds—such as **Unreal Engine real-time camera viewports, TouchDesigner interactive generative systems, or web-based dynamic lyric overlays**—is often a major bottleneck in Resolume Arena.
+
+Traditional NDI or desktop capture methods frequently introduce 2 to 3 frames of buffering latency. The **Zephyr Window Capture Plugin** solves this by establishing a direct **DirectX 11/12 Shared Texture GPU pipeline** on Windows.
+
+## Key Features & Highlights
+- **Zero-Copy GPU Texture Sharing:** Direct memory transfer between the target window and Resolume's composition engine without CPU-RAM roundtrips.
+- **True Alpha Channel Support:** Automatically extracts 32-bit transparent backgrounds for clean graphic overlays and typography without chroma-keying.
+- **Ultra-Low Latency:** Latency is minimized to under **1 frame (< 16ms @ 60 FPS)**.
+- **Background Window Capture:** Continues capturing windows even when minimized or occluded by other applications.
+
+## System Requirements
+- **Operating System:** Windows 10 / Windows 11 (64-bit)
+- **Host Software:** Resolume Arena 7.14 or later (64-bit)
+- **GPU:** NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 or higher
+
+## Installation & Setup Guide
+
+### Step 1: Copy Plugin Binary
+Download the compiled plugin binary and place ZephyrWindowCapture.dll into your Resolume VFX directory:
+C:/Program Files/Resolume Arena/plugins/vfx/
+
+### Step 2: Restart Resolume Arena
+Launch Resolume Arena. In the **Sources** panel on the right, search for **"Zephyr Window Capture"**.
+
+### Step 3: Select Window Target
+Drag the source into any clip slot. In the Clip Properties panel:
+1. Select your target application from the **Window Dropdown** list.
+2. Toggle **Capture Cursor** (On/Off).
+3. Toggle **Preserve Alpha Transparency** (On/Off).
+
+## Performance Benchmarks
+In tests running **4K 60 FPS** window capture from Unreal Engine 5.4 into Resolume Arena:
+- **GPU Overhead:** < 3.2% on RTX 3080
+- **Frame Pacing:** Locked 60.0 FPS with 0 dropped frames over a 4-hour live stress test.`,
+    coverImage: "/images/projects/stage-event-design-asset-1.png",
+    category: "Software Update",
+    tags: ["Resolume", "VJ Plugin", "Windows", "DirectX", "Live Visuals"],
+    published: true,
+    publishedAt: "2026-08-29T18:22:00Z",
+    createdAt: "2026-08-29T18:22:00Z",
+    updatedAt: "2026-08-29T18:22:00Z",
+    views: 48,
+    readTime: "4 min read",
+    softwareVersion: "Resolume Arena 7.18+ / Windows 10/11",
+    downloadUrl: "https://github.com/zephyrrr13/resolume-window-capture",
+    keyTakeaways: [
+      "DirectX 11/12 Shared Texture eliminates CPU latency for zero-lag capture.",
+      "Supports 32-bit transparent alpha channel for web & kinetic typography overlays.",
+      "Captures background & occluded windows without freezing frame buffer.",
+      "Plug-and-play installation for Resolume Arena 7.14+."
+    ],
+  },
+
+  {
     id: "art-1",
     slug: "designing-comcore-launching-ceremony-3d-stage",
     title: "Designing the Comcore Launching Ceremony: Spatial 3D Stage Architecture",
