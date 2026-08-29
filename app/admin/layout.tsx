@@ -7,7 +7,10 @@ import { Inter } from "next/font/google";
 import {
   LayoutDashboard,
   FileText,
+  Image as ImageIcon,
   Sliders,
+  Menu,
+  Blocks,
   Bot,
   ShieldAlert,
   LogOut,
@@ -15,9 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  User,
   Activity,
 } from "lucide-react";
+import { FloatingAiCopilot } from "@/components/admin/floating-ai-copilot";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,14 +63,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       badge: "Live",
     },
     {
-      title: "Artikel & CMS Blog",
+      title: "Artikel & Berita CMS",
       href: "/admin/articles",
       icon: FileText,
+    },
+    {
+      title: "Media & Galeri",
+      href: "/admin/media",
+      icon: ImageIcon,
     },
     {
       title: "Editor Konten Halaman",
       href: "/admin/pages",
       icon: Sliders,
+    },
+    {
+      title: "Menu Navigasi",
+      href: "/admin/menus",
+      icon: Menu,
+    },
+    {
+      title: "Plugins & SEO",
+      href: "/admin/plugins",
+      icon: Blocks,
     },
     {
       title: "AI Gateway Copilot",
@@ -114,7 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-3 space-y-1.5">
+          <nav className="p-3 space-y-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -123,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+                  className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-all ${
                     isActive
                       ? "bg-white text-black font-semibold shadow-md"
                       : "text-zinc-400 hover:bg-white/5 hover:text-white"
@@ -144,7 +162,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="flex flex-1 items-center justify-between truncate">
                       <span className="truncate">{item.title}</span>
                       {item.badge && (
-                        <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                        <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-400">
                           {item.badge}
                         </span>
                       )}
@@ -215,7 +233,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="text-white font-bold uppercase">
               {pathname === "/admin"
                 ? "Overview & Analitik"
-                : pathname.replace("/admin/", "").toUpperCase()}
+                : pathname.replace("/admin/", "").replace("-", " ").toUpperCase()}
             </span>
           </div>
 
@@ -237,6 +255,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Dynamic Page Content */}
         <div className="p-6 md:p-8 max-w-7xl mx-auto">{children}</div>
+
+        {/* Floating AI Copilot Trigger & Drawer */}
+        <FloatingAiCopilot />
       </main>
     </div>
   );

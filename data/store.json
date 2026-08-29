@@ -10,7 +10,6 @@
       "failedLoginAttempts": 0
     }
   ],
-  "resetTokens": [],
   "articles": [
     {
       "id": "art-1",
@@ -53,6 +52,141 @@
       "readTime": "3 min read"
     }
   ],
+  "galleryItems": [
+    {
+      "id": "gal_1",
+      "title": "Comcore Stage Tunnel Illumination",
+      "category": "3D Stage",
+      "imageUrl": "/images/projects/comcore-asset-1.png",
+      "aspectRatio": "16/9",
+      "featured": true,
+      "tags": [
+        "Octane",
+        "Stage",
+        "Cinema4D"
+      ],
+      "createdAt": "2026-08-20T00:00:00Z"
+    },
+    {
+      "id": "gal_2",
+      "title": "ZTE Days Interactive 5G Booth",
+      "category": "Exhibition",
+      "imageUrl": "/images/projects/zte-days-asset-1.png",
+      "aspectRatio": "16/9",
+      "featured": true,
+      "tags": [
+        "ZTE",
+        "Booth",
+        "Lighting"
+      ],
+      "createdAt": "2026-08-22T00:00:00Z"
+    },
+    {
+      "id": "gal_3",
+      "title": "Floating Astronaut Spatial Key Visual",
+      "category": "Key Visual",
+      "imageUrl": "/images/projects/floating-astronaut-1.png",
+      "aspectRatio": "1/1",
+      "featured": true,
+      "tags": [
+        "Cinema 4D",
+        "Surreal",
+        "Character"
+      ],
+      "createdAt": "2026-08-24T00:00:00Z"
+    }
+  ],
+  "menuItems": [
+    {
+      "id": "m_1",
+      "label": "Home",
+      "path": "/",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": "m_2",
+      "label": "About Me",
+      "path": "/about",
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": "m_3",
+      "label": "My Works",
+      "path": "/works",
+      "order": 3,
+      "visible": true
+    },
+    {
+      "id": "m_4",
+      "label": "Gallery Wall",
+      "path": "/gallery",
+      "order": 4,
+      "visible": true
+    },
+    {
+      "id": "m_5",
+      "label": "Articles & News",
+      "path": "/blog",
+      "order": 5,
+      "visible": true
+    },
+    {
+      "id": "m_6",
+      "label": "Contact",
+      "path": "/contact",
+      "order": 6,
+      "visible": true
+    }
+  ],
+  "plugins": {
+    "seo": {
+      "enabled": true,
+      "metaTitle": "ZAINAL ABIDIN — Senior 3D Artist & Graphic Designer",
+      "metaDescription": "High-end 3D stage architecture, Octane rendering, ceremonial events, and creative direction based in Jakarta, Indonesia.",
+      "keywords": "3D Artist Jakarta, Event Stage Designer, Octane Render, Cinema 4D, Visual Jockey",
+      "ogImage": "/images/projects/comcore-asset-1.png"
+    },
+    "googleAnalytics": {
+      "enabled": false,
+      "measurementId": "G-XXXXXXXXXX"
+    },
+    "whatsappWidget": {
+      "enabled": true,
+      "phoneNumber": "+6281291329873",
+      "greetingMessage": "Halo Zainal, saya ingin berdiskusi mengenai project 3D Stage / Exhibition design.",
+      "position": "bottom-right"
+    },
+    "maintenanceMode": {
+      "enabled": false,
+      "title": "System Upgrades in Progress",
+      "message": "Portfolio is currently updating 3D renders and case studies. Please check back shortly."
+    }
+  },
+  "pageSettings": {
+    "heroTagline": "3D ARTIST & GRAPHIC DESIGNER",
+    "heroRole": "SENIOR 3D ARTIST & SENIOR GRAPHIC DESIGNER",
+    "heroLocation": "JAKARTA, ID // PULO GEBANG",
+    "aboutBio": "Multidisciplinary 3D Artist and Graphic Designer with 5+ years of experience specializing in event stage architecture, ceremonial visual systems, immersive exhibition booths, and high-impact key visuals.",
+    "featuredProjects": [
+      "comcore-launching-ceremony",
+      "zte-days",
+      "zoomlion-exhibition",
+      "stage-event-design",
+      "floating-astronaut"
+    ],
+    "contactEmail": "ananizainal13@gmail.com",
+    "whatsappNumber": "+6281291329873",
+    "socials": {
+      "instagram": "https://www.instagram.com/zephyrrr13?igsi=MWpkZG5ra29jejhtbA%3D%3D&utm_source=qr",
+      "linkedin": "https://www.linkedin.com/in/zephyrrr13/",
+      "threads": "https://www.threads.com/@zephyrrr13?igshid=NTc4MTIwNjQ2YQ==",
+      "behance": "https://www.behance.net/ananimr13",
+      "discord": "https://discord.gg/DncG838n",
+      "wechat": "zephyrr13"
+    }
+  },
   "visitorLogs": [
     {
       "id": "log_1",
@@ -84,28 +218,5 @@
       "ip": "127.0.0.1",
       "details": "Secure CMS Database and Admin user initialized"
     }
-  ],
-  "pageSettings": {
-    "heroTagline": "3D ARTIST & GRAPHIC DESIGNER",
-    "heroRole": "SENIOR 3D ARTIST & SENIOR GRAPHIC DESIGNER",
-    "heroLocation": "JAKARTA, ID // PULO GEBANG",
-    "aboutBio": "Multidisciplinary 3D Artist and Graphic Designer with 5+ years of experience specializing in event stage architecture, ceremonial visual systems, immersive exhibition booths, and high-impact key visuals.",
-    "featuredProjects": [
-      "comcore-launching-ceremony",
-      "zte-days",
-      "zoomlion-exhibition",
-      "stage-event-design",
-      "floating-astronaut"
-    ],
-    "contactEmail": "ananizainal13@gmail.com",
-    "whatsappNumber": "+6281291329873",
-    "socials": {
-      "instagram": "https://www.instagram.com/zephyrrr13?igsi=MWpkZG5ra29jejhtbA%3D%3D&utm_source=qr",
-      "linkedin": "https://www.linkedin.com/in/zephyrrr13/",
-      "threads": "https://www.threads.com/@zephyrrr13?igshid=NTc4MTIwNjQ2YQ==",
-      "behance": "https://www.behance.net/ananimr13",
-      "discord": "https://discord.gg/DncG838n",
-      "wechat": "zephyrr13"
-    }
-  }
+  ]
 }

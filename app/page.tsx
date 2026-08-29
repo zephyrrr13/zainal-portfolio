@@ -4,10 +4,16 @@ import { PortfolioSection } from "@/components/portfolio-section";
 import { ContactSection } from "@/components/contact-section";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Clock, ArrowUpRight, Sparkles } from "lucide-react";
 import { PERSONAL_INFO } from "@/lib/data";
+import { db } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
+  const data = db.get();
+  const latestArticles = data.articles.filter((a) => a.published).slice(0, 3);
+
   return (
     <>
       {/* 1. Kinetic Hero with Interleaved Cutout & 21st ASCII */}
@@ -23,7 +29,79 @@ export default function HomePage() {
         showAllLink={true}
       />
 
-      {/* View All Works & Gallery Banners */}
+      {/* 4. Latest Articles, Tutorials & News Section */}
+      <section className="bg-black px-4 sm:px-8 py-20 border-t border-white/10 text-white">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-zinc-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>EDITORIAL & KNOWLEDGE BASE</span>
+              </div>
+              <h2 className="mt-3 text-3xl sm:text-5xl font-black uppercase tracking-tight text-white">
+                ARTICLES, TUTORIALS & NEWS
+              </h2>
+            </div>
+
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300 hover:border-white hover:bg-white hover:text-black transition-all"
+            >
+              <span>VIEW ALL POSTS</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestArticles.map((art) => (
+              <Link
+                key={art.id}
+                href={`/blog/${art.slug}`}
+                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-white/15 bg-zinc-950/80 p-6 transition-all duration-300 hover:border-white/40 hover:bg-zinc-900/60"
+              >
+                <div>
+                  {art.coverImage && (
+                    <div className="relative h-48 w-full overflow-hidden rounded-xl bg-zinc-900 mb-5 border border-white/10">
+                      <Image
+                        src={art.coverImage}
+                        alt={art.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute top-2.5 left-2.5 rounded bg-black/80 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-300 backdrop-blur-md border border-white/15">
+                        {art.category}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 font-mono text-[11px] text-zinc-500 mb-2">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> {art.readTime}
+                    </span>
+                    <span>•</span>
+                    <span>{art.publishedAt ? new Date(art.publishedAt).toLocaleDateString("id-ID", { dateStyle: "medium" }) : "Recent"}</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-white group-hover:text-zinc-200 transition-colors leading-snug line-clamp-2">
+                    {art.title}
+                  </h3>
+
+                  <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed font-sans">
+                    {art.excerpt}
+                  </p>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 font-mono text-xs font-bold uppercase text-zinc-300 group-hover:text-white">
+                  <span>Read Article</span>
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. View All Works & Gallery Banners */}
       <section className="bg-black px-4 sm:px-8 pb-16 text-white">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -78,7 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Affiliation Spotlight (PT Nusaraya Event) */}
+      {/* 6. Affiliation Spotlight (PT Nusaraya Event) */}
       <section className="bg-black px-4 sm:px-8 py-20 border-t border-white/10 text-white">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -129,7 +207,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Direct Contact Section */}
+      {/* 7. Direct Contact Section */}
       <ContactSection />
     </>
   );

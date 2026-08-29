@@ -15,6 +15,9 @@ import {
   Tag,
   Folder,
   Image as ImageIcon,
+  Layers,
+  Sparkles,
+  Link2,
 } from "lucide-react";
 import { Article } from "@/lib/db";
 
@@ -47,12 +50,19 @@ export default function AdminArticlesPage() {
     setEditingArticle({
       title: "",
       slug: "",
-      category: "3D Architecture",
-      tags: ["Stage Design", "Octane Render"],
+      category: "Tutorial",
+      tags: ["Octane", "Cinema4D", "3D Workflow"],
       excerpt: "",
       content: "",
       coverImage: "/images/projects/comcore-asset-1.png",
       published: true,
+      softwareVersion: "Cinema 4D 2026 / Octane 2026.1",
+      downloadUrl: "",
+      keyTakeaways: [
+        "Langkah 1: Setup volumetric fog & light scattering.",
+        "Langkah 2: Gunakan IES profile realistis untuk moving head fixture.",
+        "Langkah 3: ACEScg color pipeline untuk akurasi LED screen.",
+      ],
     });
     setIsEditing(true);
   };
@@ -77,7 +87,7 @@ export default function AdminArticlesPage() {
       });
 
       if (res.ok) {
-        setNotification(isUpdate ? "Artikel berhasil diperbarui!" : "Artikel baru berhasil dipublikasikan!");
+        setNotification(isUpdate ? "Artikel/Berita berhasil diperbarui!" : "Artikel/Berita baru berhasil dipublikasikan!");
         setTimeout(() => setNotification(null), 3000);
         setIsEditing(false);
         setEditingArticle(null);
@@ -109,10 +119,10 @@ export default function AdminArticlesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/10 pb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Artikel & Case Studies CMS
+            Artikel, Tutorial & Berita (CMS)
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Kelola publikasi tulisan, breakdown arsitektur panggung 3D, dan proses kreatif.
+            Publikasikan tutorial 3D, update software/tools, berita industri, dan breakdown stage design dengan template serbaguna.
           </p>
         </div>
 
@@ -121,7 +131,7 @@ export default function AdminArticlesPage() {
           className="flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2.5 text-xs font-bold uppercase text-black hover:bg-zinc-200 transition-colors shadow-lg"
         >
           <Plus className="h-4 w-4" />
-          <span>Buat Artikel Baru</span>
+          <span>Buat Post / Tutorial Baru</span>
         </button>
       </div>
 
@@ -135,7 +145,7 @@ export default function AdminArticlesPage() {
       {/* Articles List Table */}
       <div className="overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/80 shadow-xl backdrop-blur-xl">
         <div className="p-5 border-b border-white/10 text-xs text-zinc-400 flex items-center justify-between font-medium">
-          <span>Daftar Artikel ({articles.length})</span>
+          <span>Daftar Artikel & Berita ({articles.length})</span>
           <span>Status: Live Publishing</span>
         </div>
 
@@ -186,6 +196,16 @@ export default function AdminArticlesPage() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2 self-end sm:self-center">
+                <a
+                  href={`/blog/${art.slug}`}
+                  target="_blank"
+                  className="flex items-center gap-1 rounded-lg border border-white/10 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 hover:text-white"
+                  title="Lihat Postingan"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  <span>Lihat</span>
+                </a>
+
                 <button
                   onClick={() => openEditArticle(art)}
                   className="flex items-center gap-1.5 rounded-lg border border-white/15 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/10 hover:text-white transition-colors"
@@ -206,21 +226,21 @@ export default function AdminArticlesPage() {
 
           {articles.length === 0 && !loading && (
             <div className="p-12 text-center text-xs text-zinc-500">
-              Belum ada artikel. Klik tombol &ldquo;Buat Artikel Baru&rdquo; untuk memulai.
+              Belum ada artikel. Klik tombol &ldquo;Buat Post / Tutorial Baru&rdquo; untuk memulai.
             </div>
           )}
         </div>
       </div>
 
-      {/* Editor Modal */}
+      {/* Universal Editor Modal */}
       {isEditing && editingArticle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
-          <div className="relative w-full max-w-3xl rounded-3xl border border-white/20 bg-zinc-950 p-6 md:p-8 shadow-2xl my-8">
+          <div className="relative w-full max-w-4xl rounded-3xl border border-white/20 bg-zinc-950 p-6 md:p-8 shadow-2xl my-8">
             <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
               <div className="flex items-center gap-2 text-sm text-zinc-300">
                 <FileText className="h-4 w-4 text-white" />
                 <span className="font-bold">
-                  {editingArticle.id ? "Edit Artikel" : "Buat Artikel Baru"}
+                  {editingArticle.id ? "Edit Artikel / Tutorial" : "Buat Post Baru (Universal Template)"}
                 </span>
               </div>
 
@@ -235,81 +255,103 @@ export default function AdminArticlesPage() {
             <form onSubmit={handleSave} className="space-y-4">
               <div>
                 <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                  Judul Artikel / Case Study
+                  Judul Artikel / Tutorial / News
                 </label>
                 <input
                   type="text"
                   value={editingArticle.title || ""}
                   onChange={(e) => setEditingArticle({ ...editingArticle, title: e.target.value })}
-                  placeholder="Contoh: Designing Comcore Launching Ceremony 3D Stage"
+                  placeholder="Contoh: Tutorial: Advanced Cinematic Lighting for 3D Concert Stages"
                   required
                   className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-white focus:outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                    Kategori
+                    Kategori Konten
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={editingArticle.category || ""}
-                      onChange={(e) => setEditingArticle({ ...editingArticle, category: e.target.value })}
-                      placeholder="3D Architecture / Exhibition / Key Visual"
-                      className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 pl-10 text-xs text-white focus:border-white focus:outline-none"
-                    />
-                    <Folder className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-zinc-500" />
-                  </div>
+                  <select
+                    value={editingArticle.category || "Tutorial"}
+                    onChange={(e) => setEditingArticle({ ...editingArticle, category: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white focus:border-white focus:outline-none cursor-pointer"
+                  >
+                    <option value="Tutorial">Tutorial & Workflow</option>
+                    <option value="Software Update">Software & Tools Update</option>
+                    <option value="3D Stage Design">3D Stage Design Case Study</option>
+                    <option value="News & Insights">News & Industry Insights</option>
+                  </select>
                 </div>
 
                 <div>
                   <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                    Tags (Pisahkan dengan koma)
+                    Versi Software / Tools
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={
-                        Array.isArray(editingArticle.tags)
-                          ? editingArticle.tags.join(", ")
-                          : (editingArticle.tags as any) || ""
-                      }
-                      onChange={(e) => setEditingArticle({ ...editingArticle, tags: e.target.value as any })}
-                      placeholder="Stage, Octane, Lighting"
-                      className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 pl-10 text-xs text-white focus:border-white focus:outline-none"
-                    />
-                    <Tag className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-zinc-500" />
-                  </div>
+                  <input
+                    type="text"
+                    value={editingArticle.softwareVersion || ""}
+                    onChange={(e) => setEditingArticle({ ...editingArticle, softwareVersion: e.target.value })}
+                    placeholder="Cinema 4D 2026 / Octane 2026.1"
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white focus:border-white focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                    Link Download / Resource (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingArticle.downloadUrl || ""}
+                    onChange={(e) => setEditingArticle({ ...editingArticle, downloadUrl: e.target.value })}
+                    placeholder="https://..."
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white focus:border-white focus:outline-none"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                  Cover Image Asset URL
-                </label>
-                <div className="relative">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                    Cover Image URL
+                  </label>
                   <input
                     type="text"
                     value={editingArticle.coverImage || ""}
                     onChange={(e) => setEditingArticle({ ...editingArticle, coverImage: e.target.value })}
                     placeholder="/images/projects/comcore-asset-1.png"
-                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 pl-10 text-xs text-white focus:border-white focus:outline-none"
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white focus:border-white focus:outline-none"
                   />
-                  <ImageIcon className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                    Tags (Pisahkan koma)
+                  </label>
+                  <input
+                    type="text"
+                    value={
+                      Array.isArray(editingArticle.tags)
+                        ? editingArticle.tags.join(", ")
+                        : (editingArticle.tags as any) || ""
+                    }
+                    onChange={(e) => setEditingArticle({ ...editingArticle, tags: e.target.value as any })}
+                    placeholder="Octane, Stage, Lighting"
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-4 py-2.5 text-xs text-white focus:border-white focus:outline-none"
+                  />
                 </div>
               </div>
 
               <div>
                 <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                  Ringkasan / Excerpt
+                  Ringkasan / Excerpt Singkat
                 </label>
                 <textarea
                   rows={2}
                   value={editingArticle.excerpt || ""}
                   onChange={(e) => setEditingArticle({ ...editingArticle, excerpt: e.target.value })}
-                  placeholder="Deskripsi singkat yang tampil pada preview card..."
+                  placeholder="Ringkasan singkat yang tampil pada preview card..."
                   className="w-full rounded-xl border border-white/15 bg-zinc-900 p-3 text-xs text-white focus:border-white focus:outline-none"
                 />
               </div>
@@ -322,8 +364,8 @@ export default function AdminArticlesPage() {
                   rows={8}
                   value={editingArticle.content || ""}
                   onChange={(e) => setEditingArticle({ ...editingArticle, content: e.target.value })}
-                  placeholder="# Judul Sub-bagian&#10;&#10;Tuliskan proses pembuatan karya 3D kamu di sini..."
-                  className="w-full rounded-xl border border-white/15 bg-zinc-900 p-3 text-xs text-white focus:border-white focus:outline-none"
+                  placeholder="# Judul Pembuka&#10;&#10;## Step 1: Penjelasan langkah pertama...&#10;&#10;## Step 2: Penjelasan langkah kedua..."
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900 p-3 text-xs text-white focus:border-white focus:outline-none font-mono"
                 />
               </div>
 
@@ -352,7 +394,7 @@ export default function AdminArticlesPage() {
                     className="flex items-center gap-2 rounded-xl border border-white bg-white px-5 py-2.5 text-xs font-bold uppercase text-black hover:bg-zinc-200"
                   >
                     <Save className="h-4 w-4" />
-                    <span>{saveLoading ? "Menyimpan..." : "Simpan Artikel"}</span>
+                    <span>{saveLoading ? "Menyimpan..." : "Simpan Post"}</span>
                   </button>
                 </div>
               </div>
