@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { KineticNavigation } from "@/components/ui/sterling-gate-kinetic-navigation";
 import { SpotlightCursor } from "@/components/ui/spotlight-cursor";
-import { SiteFooter } from "@/components/site-footer";
+import { SiteShell } from "@/components/site-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,11 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className="bg-[#000000] text-[#F5F5F5] antialiased selection:bg-white selection:text-black min-h-screen flex flex-col justify-between">
+      <body className="bg-[#000000] text-[#F5F5F5] antialiased selection:bg-white selection:text-black min-h-screen flex flex-col justify-between font-sans">
         <SpotlightCursor />
-        <KineticNavigation />
-        <main className="relative w-full flex-grow">{children}</main>
-        <SiteFooter />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );

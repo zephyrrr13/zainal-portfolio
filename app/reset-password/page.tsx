@@ -9,7 +9,6 @@ function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
-  const email = searchParams.get("email") || "";
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,7 +24,7 @@ function ResetPasswordForm() {
     setSuccess(null);
 
     if (!token) {
-      setError("Token verifikasi tidak ditemukan di URL.");
+      setError("Token verifikasi tidak valid atau tidak ditemukan di URL.");
       return;
     }
 
@@ -35,7 +34,7 @@ function ResetPasswordForm() {
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Konfirmasi password tidak cocok.");
+      setError("Konfirmasi password baru tidak cocok.");
       return;
     }
 
@@ -53,7 +52,7 @@ function ResetPasswordForm() {
       if (!res.ok) {
         setError(data.error || "Gagal mereset kata sandi.");
       } else {
-        setSuccess("Kata sandi berhasil diperbarui! Mengalihkan ke halaman login...");
+        setSuccess("Kata sandi berhasil diperbarui! Mengalihkan ke login...");
         setTimeout(() => {
           router.push("/login");
         }, 1500);
@@ -66,7 +65,7 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/90 p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
+    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
       <div className="mb-6">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 mb-4">
           <KeyRound className="h-3 w-3 text-emerald-400" />
@@ -75,22 +74,20 @@ function ResetPasswordForm() {
         <h1 className="text-3xl font-extrabold tracking-tight text-white">
           Buat Password Baru
         </h1>
-        {email && (
-          <p className="mt-1 font-mono text-xs text-zinc-400">
-            Akun: <span className="text-white font-bold">{email}</span>
-          </p>
-        )}
+        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-sans">
+          Masukkan kata sandi baru yang kuat untuk mengamankan akun admin kamu.
+        </p>
       </div>
 
       {error && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/30 p-3.5 text-xs text-red-300">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300 font-sans">
           <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-xs text-emerald-300">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300 font-sans">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
           <span>{success}</span>
         </div>
@@ -108,7 +105,7 @@ function ResetPasswordForm() {
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Minimal 8 karakter"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-mono text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-sans text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Lock className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
             <button
@@ -132,7 +129,7 @@ function ResetPasswordForm() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Ulangi password baru"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-mono text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-sans text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Lock className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
           </div>
@@ -141,7 +138,7 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -157,7 +154,7 @@ function ResetPasswordForm() {
       <div className="mt-6 text-center">
         <Link
           href="/login"
-          className="font-mono text-xs text-zinc-400 hover:text-white underline"
+          className="font-sans text-xs text-zinc-400 hover:text-white underline"
         >
           Kembali ke Halaman Login
         </Link>
@@ -168,13 +165,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="relative flex min-h-screen w-full flex-col justify-between bg-[#000000] px-4 pt-28 pb-12 sm:px-8 text-white">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
 
-      <div className="relative z-10 mx-auto my-auto w-full max-w-md">
+      <div className="relative z-10 mx-auto w-full max-w-md">
         <Suspense
           fallback={
-            <div className="flex h-96 items-center justify-center font-mono text-xs text-zinc-400">
+            <div className="flex h-96 items-center justify-center font-sans text-xs text-zinc-400">
               Memuat verifikasi...
             </div>
           }

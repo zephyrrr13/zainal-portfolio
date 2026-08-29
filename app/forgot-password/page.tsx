@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
       if (!res.ok) {
         setError(data.error || "Gagal memproses pengiriman email verifikasi.");
       } else {
-        setMessage(data.message || "Link verifikasi telah dikirim ke inbox email kamu.");
+        setMessage(data.message || "Link verifikasi telah dikirim ke email kamu.");
       }
     } catch {
       setError("Terjadi gangguan koneksi ke server SMTP.");
@@ -44,15 +44,15 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col justify-between bg-[#000000] px-4 pt-28 pb-12 sm:px-8 text-white">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
 
-      <div className="relative z-10 mx-auto my-auto w-full max-w-md">
-        <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/90 p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
+      <div className="relative z-10 mx-auto w-full max-w-md">
+        <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-2xl backdrop-blur-2xl sm:p-10">
           
           <Link
             href="/login"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-zinc-400 hover:text-white transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 font-sans text-xs text-zinc-400 hover:text-white transition-colors mb-6"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             <span>KEMBALI KE LOGIN</span>
@@ -62,20 +62,20 @@ export default function ForgotPasswordPage() {
             <h1 className="text-3xl font-extrabold tracking-tight text-white">
               Reset Password
             </h1>
-            <p className="mt-2 text-xs font-mono text-zinc-400 leading-relaxed">
+            <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-sans">
               Masukkan email terdaftar. Sistem Google SMTP akan mengirimkan link verifikasi untuk membuat kata sandi baru.
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/30 p-3.5 text-xs text-red-300">
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300 font-sans">
               <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {message && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-xs text-emerald-300">
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300 font-sans">
               <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
               <span>{message}</span>
             </div>
@@ -91,9 +91,9 @@ export default function ForgotPasswordPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ananizainal13@gmail.com"
+                  placeholder="nama@email.com"
                   required
-                  className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-mono text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-sans text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
                 />
                 <Mail className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
               </div>
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
             >
               {loading ? (
                 <>
@@ -117,10 +117,6 @@ export default function ForgotPasswordPage() {
               )}
             </button>
           </form>
-
-          <div className="mt-6 border-t border-white/10 pt-4 text-center font-mono text-[10px] text-zinc-500">
-            Powered by Google SMTP Gateway
-          </div>
         </div>
       </div>
     </div>

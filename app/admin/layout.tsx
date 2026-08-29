@@ -22,17 +22,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
-  const [adminUser, setAdminUser] = useState<{ username: string; role: string } | null>(null);
 
   useEffect(() => {
-    // Check if collapsed preference saved
     const saved = localStorage.getItem("zainal_sidebar_collapsed");
     if (saved) setCollapsed(saved === "true");
-
-    setAdminUser({
-      username: "zephyrrr13",
-      role: "SUPERADMIN",
-    });
   }, []);
 
   const toggleSidebar = () => {
@@ -84,10 +77,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex min-h-screen w-full bg-[#070709] text-white selection:bg-white selection:text-black">
+    <div className="flex min-h-screen w-full bg-[#08080a] text-white font-sans selection:bg-white selection:text-black">
       {/* 1. Collapsible Sidebar */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col justify-between border-r border-white/10 bg-[#0c0c0f]/95 backdrop-blur-2xl transition-all duration-300 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col justify-between border-r border-white/10 bg-[#0d0d11]/95 backdrop-blur-2xl transition-all duration-300 ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -97,7 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {!collapsed ? (
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <span className="flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_0_10px_#FFFFFF]"></span>
-                <span className="truncate font-mono text-xs font-bold uppercase tracking-[0.2em] text-white">
+                <span className="truncate text-xs font-bold uppercase tracking-wider text-white">
                   ZAINAL CMS
                 </span>
               </div>
@@ -124,9 +117,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 font-mono text-xs transition-all ${
+                  className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-white text-black font-bold shadow-md"
+                      ? "bg-white text-black font-semibold shadow-md"
                       : "text-zinc-400 hover:bg-white/5 hover:text-white"
                   }`}
                   title={collapsed ? item.title : undefined}
@@ -145,12 +138,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="flex flex-1 items-center justify-between truncate">
                       <span className="truncate">{item.title}</span>
                       {item.badge && (
-                        <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-400">
+                        <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
                           {item.badge}
                         </span>
                       )}
                       {item.accent && (
-                        <Sparkles className="h-3 w-3 text-purple-400" />
+                        <Sparkles className="h-3.5 w-3.5 text-purple-400" />
                       )}
                     </div>
                   )}
@@ -166,7 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link
             href="/"
             target="_blank"
-            className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-[11px] text-zinc-300 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all"
+            className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 hover:border-white/30 hover:bg-white/10 hover:text-white transition-all"
             title="Lihat Website Live"
           >
             <ExternalLink className="h-3.5 w-3.5 shrink-0" />
@@ -174,17 +167,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
 
           {/* User Badge */}
-          <div className="flex items-center gap-3 rounded-xl bg-zinc-900/60 p-2.5 border border-white/5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 border border-white/10 text-white font-mono text-xs font-bold">
+          <div className="flex items-center gap-3 rounded-xl bg-zinc-900/70 p-2.5 border border-white/5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 border border-white/10 text-white text-xs font-bold">
               ZA
             </div>
 
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <div className="truncate font-mono text-xs font-bold text-white">
-                  {adminUser?.username || "Admin"}
+                <div className="truncate text-xs font-bold text-white">
+                  Zainal Abidin
                 </div>
-                <div className="flex items-center gap-1.5 font-mono text-[9px] text-emerald-400">
+                <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                   SUPERADMIN
                 </div>
@@ -209,8 +202,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }`}
       >
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-[#070709]/80 px-6 backdrop-blur-xl">
-          <div className="flex items-center gap-3 font-mono text-xs text-zinc-400">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-[#08080a]/80 px-6 backdrop-blur-xl">
+          <div className="flex items-center gap-3 text-xs text-zinc-400 font-medium">
             <span>ADMIN PORTAL</span>
             <span className="text-zinc-600">//</span>
             <span className="text-white font-bold uppercase">
@@ -221,15 +214,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] text-zinc-300">
-              <Activity className="h-3 w-3 text-emerald-400 animate-pulse" />
+            <div className="hidden sm:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-300">
+              <Activity className="h-3.5 w-3.5 text-emerald-400 animate-pulse" />
               <span>SERVER: ONLINE</span>
             </div>
 
             <Link
               href="/"
               target="_blank"
-              className="rounded-full border border-white/20 px-3.5 py-1.5 font-mono text-xs text-white hover:bg-white hover:text-black transition-all"
+              className="rounded-full border border-white/20 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-white hover:text-black transition-all"
             >
               zephyrrr13.vercel.app ↗
             </Link>

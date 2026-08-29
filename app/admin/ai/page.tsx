@@ -76,7 +76,7 @@ export default function AdminAiCopilotPage() {
   ];
 
   return (
-    <div className="flex h-[calc(100vh-8.5rem)] flex-col rounded-3xl border border-white/10 bg-zinc-950/80 shadow-2xl backdrop-blur-xl overflow-hidden">
+    <div className="flex h-[calc(100vh-8.5rem)] flex-col rounded-3xl border border-white/10 bg-zinc-950/80 shadow-2xl backdrop-blur-xl overflow-hidden font-sans">
       {/* Top Bar */}
       <div className="flex items-center justify-between border-b border-white/10 px-6 py-4 bg-zinc-900/50">
         <div className="flex items-center gap-3">
@@ -84,13 +84,13 @@ export default function AdminAiCopilotPage() {
             <Bot className="h-5 w-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs font-bold text-white">
+            <div className="flex items-center gap-2 text-sm font-bold text-white">
               <span>ZAINAL AI COPILOT</span>
-              <span className="rounded-full bg-purple-500/20 px-2 py-0.5 text-[9px] text-purple-300">
+              <span className="rounded-full bg-purple-500/20 px-2 py-0.5 text-[10px] font-semibold text-purple-300">
                 GEMINI AI GATEWAY
               </span>
             </div>
-            <p className="font-mono text-[10px] text-zinc-400">
+            <p className="text-xs text-zinc-400">
               Specialized in 3D Architecture, Stage Engineering & Portfolio Copy
             </p>
           </div>
@@ -126,9 +126,9 @@ export default function AdminAiCopilotPage() {
             )}
 
             <div
-              className={`relative max-w-2xl rounded-2xl p-4 font-mono text-xs leading-relaxed ${
+              className={`relative max-w-2xl rounded-2xl p-4 text-xs leading-relaxed ${
                 m.role === "user"
-                  ? "bg-white text-black font-semibold shadow"
+                  ? "bg-white text-black font-medium shadow"
                   : "bg-zinc-900 border border-white/10 text-zinc-200"
               }`}
             >
@@ -137,7 +137,7 @@ export default function AdminAiCopilotPage() {
               {m.role === "assistant" && (
                 <button
                   onClick={() => copyText(m.content, idx)}
-                  className="mt-3 flex items-center gap-1.5 font-mono text-[10px] text-zinc-400 hover:text-white transition-colors border-t border-white/5 pt-2"
+                  className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors border-t border-white/5 pt-2"
                 >
                   {copiedIndex === idx ? (
                     <>
@@ -167,7 +167,7 @@ export default function AdminAiCopilotPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-950 text-purple-300">
               <Sparkles className="h-4 w-4 animate-spin" />
             </div>
-            <div className="rounded-2xl bg-zinc-900 border border-white/10 p-3 font-mono text-xs text-zinc-400 animate-pulse">
+            <div className="rounded-2xl bg-zinc-900 border border-white/10 p-3 text-xs text-zinc-400 animate-pulse">
               AI sedang menganalisis dan menyusun respon...
             </div>
           </div>
@@ -178,14 +178,14 @@ export default function AdminAiCopilotPage() {
 
       {/* Quick Prompt Suggestions */}
       <div className="border-t border-white/5 bg-zinc-900/30 px-6 py-2.5 overflow-x-auto flex gap-2">
-        <span className="flex items-center gap-1 font-mono text-[10px] text-zinc-500 whitespace-nowrap">
-          <Lightbulb className="h-3 w-3 text-yellow-400" /> Saran:
+        <span className="flex items-center gap-1 text-xs text-zinc-500 whitespace-nowrap font-medium">
+          <Lightbulb className="h-3.5 w-3.5 text-yellow-400" /> Saran:
         </span>
         {promptSuggestions.map((s, i) => (
           <button
             key={i}
             onClick={() => handleSend(s)}
-            className="rounded-full border border-white/10 bg-zinc-800/80 px-3 py-1 font-mono text-[10.5px] text-zinc-300 hover:border-white hover:text-white whitespace-nowrap transition-colors"
+            className="rounded-full border border-white/10 bg-zinc-800/80 px-3.5 py-1 text-xs text-zinc-300 hover:border-white hover:text-white whitespace-nowrap transition-colors"
           >
             {s}
           </button>
@@ -206,13 +206,13 @@ export default function AdminAiCopilotPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Tanyakan sesuatu ke AI Copilot portofolio..."
           disabled={loading}
-          className="flex-1 rounded-xl border border-white/15 bg-zinc-900 px-4 py-3 font-mono text-xs text-white placeholder-zinc-500 focus:border-white focus:outline-none"
+          className="flex-1 rounded-xl border border-white/15 bg-zinc-900 px-4 py-3 text-xs text-white placeholder-zinc-500 focus:border-white focus:outline-none"
         />
 
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="flex items-center gap-2 rounded-xl border border-white bg-white px-5 py-3 font-mono text-xs font-bold uppercase text-black hover:bg-zinc-200 disabled:opacity-50 transition-all shadow"
+          className="flex items-center gap-2 rounded-xl border border-white bg-white px-5 py-3 text-xs font-bold uppercase text-black hover:bg-zinc-200 disabled:opacity-50 transition-all shadow"
         >
           <Send className="h-4 w-4" />
           <span className="hidden sm:inline">Kirim</span>

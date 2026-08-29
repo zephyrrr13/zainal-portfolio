@@ -35,7 +35,7 @@ export async function getSession(): Promise<SessionPayload | null> {
 
 export function setSessionCookie(token: string, rememberMe: boolean = false) {
   const cookieStore = cookies();
-  const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24; // 30 days or 1 day
+  const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24;
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -56,62 +56,42 @@ export function clearSessionCookie() {
   });
 }
 
-// CAPTCHA Generator with HMAC Signature (Zero bot cracking)
+// 1. Cryptographic Self-Contained Reset Token (Serverless Safe)
+export function signResetToken(email: string): string {
+  return jwt.sign({ email, purpose: "reset_password" }, JWT_SECRET, { expiresIn: "1h" });
+}
+
+export function verifyResetToken(token: string): { email: string } | null {
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { email: string; purpose: string };
+    if (payload.purpose !== "reset_password") return null;
+    return { email: payload.email };
+  } catch {
+    return null;
+  }
+}
+
+// 2. Cryptographic Anti-Bot CAPTCHA (Serverless Safe & Cache-Busted)
 export function generateCaptcha() {
-  const num1 = Math.floor(Math.random() * 12) + 3;
-  const num2 = Math.floor(Math.random() * 8) + 2;
+  const num1 = Math.floor(Math.random() * 12) + 2;
+  const num2 = Math.floor(Math.random() * 9) + 1;
   const answer = (num1 + num2).toString();
 
-  const timestamp = Date.now();
-  const rawSignature = `${answer}:${timestamp}:${JWT_SECRET}`;
-  const signature = crypto.createHash("sha256").update(rawSignature).digest("hex");
+  const token = jwt.sign({ answer, purpose: "captcha" }, JWT_SECRET, { expiresIn: "10m" });
 
   return {
     question: `Berapa ${num1} + ${num2} ?`,
-    code: `${num1}+${num2}`,
-    timestamp,
-    signature,
+    token,
   };
 }
 
-export function verifyCaptcha(userInput: string, timestamp: number, signature: string): boolean {
-  // Expire captcha after 5 minutes
-  if (Date.now() - timestamp > 5 * 60 * 1000) return false;
-
-  const rawSignature = `${userInput.trim()}:${timestamp}:${JWT_SECRET}`;
-  const expectedSignature = crypto.createHash("sha256").update(rawSignature).digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
-}
-
-// Rate Limiter Memory Tracker
-const loginAttempts = new Map<string, { count: number; lockUntil: number }>();
-
-export function checkRateLimit(ip: string): { allowed: boolean; remainingSeconds?: number } {
-  const record = loginAttempts.get(ip);
-  if (!record) return { allowed: true };
-
-  if (Date.now() < record.lockUntil) {
-    const remainingSeconds = Math.ceil((record.lockUntil - Date.now()) / 1000);
-    return { allowed: false, remainingSeconds };
+export function verifyCaptcha(userInput: string, token: string): boolean {
+  try {
+    if (!userInput || !token) return false;
+    const payload = jwt.verify(token, JWT_SECRET) as { answer: string; purpose: string };
+    if (payload.purpose !== "captcha") return false;
+    return payload.answer.trim() === userInput.trim();
+  } catch {
+    return false;
   }
-
-  if (record.count >= 5 && Date.now() > record.lockUntil) {
-    loginAttempts.delete(ip);
-    return { allowed: true };
-  }
-
-  return { allowed: true };
-}
-
-export function recordFailedLogin(ip: string) {
-  const record = loginAttempts.get(ip) || { count: 0, lockUntil: 0 };
-  record.count += 1;
-  if (record.count >= 5) {
-    record.lockUntil = Date.now() + 15 * 60 * 1000; // 15 minutes lockout
-  }
-  loginAttempts.set(ip, record);
-}
-
-export function resetFailedLogin(ip: string) {
-  loginAttempts.delete(ip);
 }

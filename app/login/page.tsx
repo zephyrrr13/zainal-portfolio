@@ -16,12 +16,7 @@ function LoginForm() {
   const [rememberMe, setRememberMe] = useState(true);
 
   // CAPTCHA State
-  const [captchaData, setCaptchaData] = useState<{
-    question: string;
-    code: string;
-    timestamp: number;
-    signature: string;
-  } | null>(null);
+  const [captchaData, setCaptchaData] = useState<{ question: string; token: string } | null>(null);
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaLoading, setCaptchaLoading] = useState(false);
 
@@ -33,14 +28,17 @@ function LoginForm() {
   const fetchCaptcha = async () => {
     setCaptchaLoading(true);
     try {
-      const res = await fetch("/api/auth/captcha");
+      const res = await fetch(`/api/auth/captcha?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (res.ok) {
         const data = await res.json();
         setCaptchaData(data);
         setCaptchaAnswer("");
       }
     } catch {
-      setError("Gagal memuat CAPTCHA keamanan. Silakan refresh.");
+      setError("Gagal memuat verifikasi keamanan. Silakan refresh.");
     } finally {
       setCaptchaLoading(false);
     }
@@ -61,7 +59,7 @@ function LoginForm() {
     }
 
     if (!captchaAnswer || !captchaData) {
-      setError("Mohon jawab verifikasi CAPTCHA anti-bot.");
+      setError("Mohon jawab pertanyaan anti-bot.");
       return;
     }
 
@@ -75,8 +73,7 @@ function LoginForm() {
           username,
           password,
           captchaAnswer,
-          captchaTimestamp: captchaData.timestamp,
-          captchaSignature: captchaData.signature,
+          captchaToken: captchaData.token,
           rememberMe,
         }),
       });
@@ -84,14 +81,14 @@ function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login gagal. Periksa kembali data kamu.");
+        setError(data.error || "Login gagal. Periksa kembali username dan password.");
         fetchCaptcha();
       } else {
-        setSuccess("Autentikasi berhasil! Mengalihkan ke Admin Dashboard...");
+        setSuccess("Autentikasi berhasil! Mengalihkan...");
         setTimeout(() => {
           router.push(redirectUrl);
           router.refresh();
-        }, 800);
+        }, 600);
       }
     } catch {
       setError("Terjadi gangguan koneksi ke server auth.");
@@ -102,8 +99,8 @@ function LoginForm() {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl sm:p-10">
-      {/* Header Badge */}
+    <div className="overflow-hidden rounded-3xl border border-white/15 bg-zinc-950/95 p-8 shadow-[0_25px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:p-10">
+      {/* Header */}
       <div className="flex items-center justify-between pb-6 border-b border-white/10">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -117,26 +114,26 @@ function LoginForm() {
         </Link>
       </div>
 
-      {/* Heading */}
+      {/* Title */}
       <div className="mt-6 mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Admin Access
         </h1>
-        <p className="mt-2 text-xs font-mono text-zinc-400 leading-relaxed">
+        <p className="mt-2 text-xs text-zinc-400 leading-relaxed font-sans">
           Masuk untuk mengelola portfolio, analitik kunjungan, dan artikel CMS.
         </p>
       </div>
 
       {/* Alerts */}
       {error && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/30 p-3.5 text-xs text-red-300">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-3.5 text-xs text-red-300 font-sans">
           <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3.5 text-xs text-emerald-300">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 text-xs text-emerald-300 font-sans">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
           <span>{success}</span>
         </div>
@@ -154,10 +151,10 @@ function LoginForm() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="zephyrrr13 atau ananizainal13@gmail.com"
+              placeholder="Masukkan username atau email"
               autoComplete="username"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-mono text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 font-sans text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Mail className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
           </div>
@@ -171,7 +168,7 @@ function LoginForm() {
             </label>
             <Link
               href="/forgot-password"
-              className="font-mono text-[10.5px] text-zinc-400 hover:text-white underline transition-colors"
+              className="text-xs text-zinc-400 hover:text-white underline transition-colors font-sans"
             >
               Lupa Password?
             </Link>
@@ -184,7 +181,7 @@ function LoginForm() {
               placeholder="••••••••••••"
               autoComplete="current-password"
               required
-              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-mono text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="w-full rounded-xl border border-white/15 bg-zinc-900/80 px-4 py-3 pl-11 pr-11 font-sans text-xs text-white placeholder-zinc-500 transition-all focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
             <Lock className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
             <button
@@ -197,7 +194,7 @@ function LoginForm() {
           </div>
         </div>
 
-        {/* Cryptographic Anti-Bot CAPTCHA Box */}
+        {/* Anti-Bot CAPTCHA Box */}
         <div className="rounded-xl border border-white/10 bg-black/60 p-3.5">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-wider text-zinc-300">
@@ -208,7 +205,7 @@ function LoginForm() {
               type="button"
               onClick={fetchCaptcha}
               disabled={captchaLoading}
-              className="flex items-center gap-1 font-mono text-[10px] text-zinc-400 hover:text-white transition-colors disabled:opacity-50"
+              className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-white transition-colors disabled:opacity-50 font-sans cursor-pointer"
             >
               <RefreshCw className={`h-3 w-3 ${captchaLoading ? "animate-spin" : ""}`} />
               <span>Acak</span>
@@ -216,7 +213,7 @@ function LoginForm() {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
-            <div className="flex items-center justify-center rounded-lg border border-white/15 bg-zinc-900 font-mono text-xs font-bold text-white tracking-widest py-2 select-none shadow-inner">
+            <div className="flex items-center justify-center rounded-lg border border-white/15 bg-zinc-900 font-mono text-xs font-bold text-white tracking-widest py-2 select-none">
               {captchaData ? captchaData.question : "Memuat..."}
             </div>
             <input
@@ -225,7 +222,7 @@ function LoginForm() {
               onChange={(e) => setCaptchaAnswer(e.target.value)}
               placeholder="Jawaban angka"
               required
-              className="rounded-lg border border-white/15 bg-zinc-900/90 px-3 py-2 text-center font-mono text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
+              className="rounded-lg border border-white/15 bg-zinc-900/90 px-3 py-2 text-center font-sans text-xs text-white placeholder-zinc-500 focus:border-white focus:bg-black focus:outline-none focus:ring-1 focus:ring-white"
             />
           </div>
         </div>
@@ -241,7 +238,7 @@ function LoginForm() {
           />
           <label
             htmlFor="rememberMe"
-            className="select-none font-mono text-xs text-zinc-300 cursor-pointer"
+            className="select-none font-sans text-xs text-zinc-300 cursor-pointer"
           >
             Tetap login di perangkat ini (30 Hari)
           </label>
@@ -251,7 +248,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="group mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
+          className="group mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white bg-white py-3.5 font-sans text-xs font-bold uppercase tracking-wider text-black shadow-lg transition-all hover:bg-zinc-200 disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -266,24 +263,19 @@ function LoginForm() {
           )}
         </button>
       </form>
-
-      {/* Footer Security Notice */}
-      <div className="mt-6 border-t border-white/10 pt-4 text-center font-mono text-[10px] text-zinc-500">
-        Protected with Rate Limiting & Google SMTP Verification
-      </div>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="relative flex min-h-screen w-full flex-col justify-between bg-[#000000] px-4 pt-28 pb-12 sm:px-8 text-white">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-[#000000] px-4 py-12 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-35" />
 
-      <div className="relative z-10 mx-auto my-auto w-full max-w-md">
+      <div className="relative z-10 mx-auto w-full max-w-md">
         <Suspense
           fallback={
-            <div className="flex h-96 items-center justify-center font-mono text-xs text-zinc-400">
+            <div className="flex h-96 items-center justify-center font-sans text-xs text-zinc-400">
               Memuat form login...
             </div>
           }
