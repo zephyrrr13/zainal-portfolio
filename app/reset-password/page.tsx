@@ -52,10 +52,11 @@ function ResetPasswordForm() {
       if (!res.ok) {
         setError(data.error || "Gagal mereset kata sandi.");
       } else {
-        setSuccess("Kata sandi berhasil diperbarui! Mengalihkan ke login...");
+        setSuccess("Kata sandi berhasil diperbarui! Mengalihkan ke Dashboard Admin...");
         setTimeout(() => {
-          router.push("/login");
-        }, 1500);
+          router.push(data.redirect || "/admin");
+          router.refresh();
+        }, 800);
       }
     } catch {
       setError("Terjadi gangguan koneksi.");
@@ -146,7 +147,7 @@ function ResetPasswordForm() {
               <span>MEMPERBARUI KATA SANDI...</span>
             </>
           ) : (
-            <span>SIMPAN PASSWORD BARU ↗</span>
+            <span>SIMPAN & MASUK KE DASHBOARD ↗</span>
           )}
         </button>
       </form>

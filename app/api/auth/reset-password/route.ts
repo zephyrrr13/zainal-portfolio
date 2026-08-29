@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-import { verifyResetToken } from "@/lib/auth";
+import {
+  verifyResetToken,
+  signToken,
+  setSessionCookie,
+  setPasswordVaultCookie,
+} from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,17 +29,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const data = db.get();
-    let user = data.users.find((u) => u.email.toLowerCase() === tokenPayload.email.toLowerCase());
-
     const salt = bcrypt.genSaltSync(10);
     const newHash = bcrypt.hashSync(newPassword, salt);
+
+    // 1. Update in-memory / local DB
+    const data = db.get();
+    let user = data.users.find((u) => u.email.toLowerCase() === tokenPayload.email.toLowerCase());
 
     if (user) {
       user.passwordHash = newHash;
       db.updateUser(user);
     } else {
-      // If user wasn't initialized in dynamic store, add/update
       data.users.push({
         id: "usr_admin_1",
         username: "zephyrrr13",
@@ -46,9 +51,25 @@ export async function POST(req: NextRequest) {
       db.save(data);
     }
 
+    // 2. Set Persistent Vault Cookie so Vercel Serverless remembers new password forever
+    setPasswordVaultCookie(tokenPayload.email, newHash);
+
+    // 3. Auto-login immediately by generating session cookie
+    const sessionToken = signToken(
+      {
+        userId: user?.id || "usr_admin_1",
+        username: user?.username || "zephyrrr13",
+        email: tokenPayload.email,
+        role: "superadmin",
+      },
+      true
+    );
+    setSessionCookie(sessionToken, true);
+
     return NextResponse.json({
       success: true,
-      message: "Kata sandi berhasil diperbarui! Silakan login dengan password baru.",
+      message: "Kata sandi berhasil diperbarui! Mengalihkan langsung ke Dashboard Admin...",
+      redirect: "/admin",
     });
   } catch (err: any) {
     console.error("Reset Password API Error:", err);

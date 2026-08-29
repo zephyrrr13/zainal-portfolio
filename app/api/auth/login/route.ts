@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-import { verifyCaptcha, signToken, setSessionCookie } from "@/lib/auth";
+import {
+  verifyCaptcha,
+  signToken,
+  setSessionCookie,
+  getVaultPasswordHash,
+} from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -29,19 +34,27 @@ export async function POST(req: NextRequest) {
     const defaultUser = (process.env.ADMIN_USERNAME || "zephyrrr13").toLowerCase();
     const defaultEmail = (process.env.ADMIN_EMAIL || "ananizainal13@gmail.com").toLowerCase();
 
-    // Check against configured admin credentials or DB
-    const adminUser = data.users.find(
-      (u) => u.email.toLowerCase() === cleanIdentifier || u.username.toLowerCase() === cleanIdentifier
-    );
-
+    // Check Vault Hash first (from persistent cookie on serverless)
+    const vaultHash = getVaultPasswordHash(cleanIdentifier);
     let isMatch = false;
 
-    if (adminUser) {
-      isMatch =
-        bcrypt.compareSync(password, adminUser.passwordHash) ||
-        password === defaultPass;
-    } else if (cleanIdentifier === defaultUser || cleanIdentifier === defaultEmail) {
-      isMatch = password === defaultPass;
+    if (vaultHash) {
+      isMatch = bcrypt.compareSync(password, vaultHash);
+    }
+
+    // If not matched via vault, check against DB or default credentials
+    if (!isMatch) {
+      const adminUser = data.users.find(
+        (u) => u.email.toLowerCase() === cleanIdentifier || u.username.toLowerCase() === cleanIdentifier
+      );
+
+      if (adminUser) {
+        isMatch =
+          bcrypt.compareSync(password, adminUser.passwordHash) ||
+          password === defaultPass;
+      } else if (cleanIdentifier === defaultUser || cleanIdentifier === defaultEmail) {
+        isMatch = password === defaultPass;
+      }
     }
 
     if (!isMatch) {
@@ -50,9 +63,9 @@ export async function POST(req: NextRequest) {
 
     const token = signToken(
       {
-        userId: adminUser?.id || "usr_admin_1",
-        username: adminUser?.username || "zephyrrr13",
-        email: adminUser?.email || "ananizainal13@gmail.com",
+        userId: "usr_admin_1",
+        username: "zephyrrr13",
+        email: "ananizainal13@gmail.com",
         role: "superadmin",
       },
       Boolean(rememberMe)
